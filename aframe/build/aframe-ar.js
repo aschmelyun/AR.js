@@ -8228,6 +8228,10 @@ AFRAME.registerComponent('arjs-anchor', {
 			type: 'number',
 			default: 0.6,
 		},
+		emitevents: {
+			type: 'boolean',
+			default: false,
+		}
 	},
 	init: function () {
 		var _this = this
@@ -8349,9 +8353,27 @@ AFRAME.registerComponent('arjs-anchor', {
 		//		honor visibility
 		//////////////////////////////////////////////////////////////////////////////
 		if( _this._arAnchor.parameters.changeMatrixMode === 'modelViewMatrix' ){
+			var wasVisible = _this.el.object3D.visible;
 			_this.el.object3D.visible = this._arAnchor.object3d.visible
+
+			if( _this.data.emitevents ) {
+				if( _this.el.object3D.visible && !wasVisible ) {
+					_this.el.emit('markerFound');
+				} else if( !_this.el.object3D.visible && wasVisible ) {
+					_this.el.emit('markerLost');
+				}
+			}
 		}else if( _this._arAnchor.parameters.changeMatrixMode === 'cameraTransformMatrix' ){
+			var wasVisible = _this.el.sceneEl.object3D.visible = _this.el.sceneEl.object3D.visible
 			_this.el.sceneEl.object3D.visible = this._arAnchor.object3d.visible
+
+			if( _this.data.emitevents ) {
+				if( _this.el.sceneEl.object3D.visible && !wasVisible ) {
+					_this.el.emit('markerFound');
+				} else if( !_this.el.sceneEl.object3D.visible && wasVisible ) {
+					_this.el.emit('markerLost');
+				}
+			}
 		}else console.assert(false)
 	}
 })
@@ -8406,6 +8428,7 @@ AFRAME.registerPrimitive('a-marker', AFRAME.utils.extendDeep({}, AFRAME.primitiv
 		'preset': 'arjs-anchor.preset',
 		'minConfidence': 'arjs-anchor.minConfidence',
 		'markerhelpers': 'arjs-anchor.markerhelpers',
+		'emitevents': 'arjs-anchor.emitevents',
 
 		'hit-testing-renderDebug': 'arjs-hit-testing.renderDebug',
 		'hit-testing-enabled': 'arjs-hit-testing.enabled',
@@ -8427,6 +8450,7 @@ AFRAME.registerPrimitive('a-marker-camera', AFRAME.utils.extendDeep({}, AFRAME.p
 		'preset': 'arjs-anchor.preset',
 		'minConfidence': 'arjs-anchor.minConfidence',
 		'markerhelpers': 'arjs-anchor.markerhelpers',
+		'emitevents': 'arjs-anchor.emitevents',
 	}
 }))
 //////////////////////////////////////////////////////////////////////////////
