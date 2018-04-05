@@ -49040,6 +49040,10 @@ ARjs.MarkerControls.prototype._initArtoolkit = function(){
 		var arController = _this.context.arController
 		console.assert(arController !== null )
 
+		// use this to change the pattern ratio of the marker width. 0.75 = the inner pattern is ~75% of the entire marker width. 
+		// some play with the actual marker might need to be done when printing.
+		// arController.setPattRatio(0.75)
+
 		// start tracking this pattern
 		if( _this.parameters.type === 'pattern' ){
 	                arController.loadMarker(_this.parameters.patternUrl, function(markerId) {
